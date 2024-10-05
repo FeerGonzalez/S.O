@@ -1,10 +1,10 @@
 package modelo;
 
 public class Medico implements Runnable {
-    private final int id;
-    private final CentroMedicoVIP centroMedico;
+    private int id;
+    private CentroMedico centroMedico;
 
-    public Medico(int id, CentroMedicoVIP centroMedico) {
+    public Medico(int id, CentroMedico centroMedico) {
         this.id = id;
         this.centroMedico = centroMedico;
     }
@@ -12,9 +12,12 @@ public class Medico implements Runnable {
     @Override
     public void run() {
         try {
-            centroMedico.atenderPaciente(id);
+            while (!centroMedico.isClosed()) {
+                centroMedico.atenderPaciente(id);
+                Thread.sleep(1000); // Simulación de tiempo de consulta
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }

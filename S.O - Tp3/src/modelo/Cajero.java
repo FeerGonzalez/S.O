@@ -1,10 +1,10 @@
 package modelo;
 
 public class Cajero implements Runnable {
-    private final int id;
-    private final CentroMedicoVIP centroMedico;
+    private int id;
+    private CentroMedico centroMedico;
 
-    public Cajero(int id, CentroMedicoVIP centroMedico) {
+    public Cajero(int id, CentroMedico centroMedico) {
         this.id = id;
         this.centroMedico = centroMedico;
     }
@@ -12,9 +12,12 @@ public class Cajero implements Runnable {
     @Override
     public void run() {
         try {
-            centroMedico.atenderCaja(id);
+            while (!centroMedico.isClosed()) {
+                centroMedico.cobrarConsulta(id);
+                Thread.sleep(500);
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }

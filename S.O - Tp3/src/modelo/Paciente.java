@@ -1,37 +1,28 @@
 package modelo;
 
+import java.util.Random;
+
 public class Paciente implements Runnable {
-    private final int id;
-    private final boolean esVIP;
-    private final CentroMedicoVIP centroMedico;
-    private final int medicoAsignado;
+    private static final Random random = new Random();
+    private int id;
+    private boolean esVip;
+    private CentroMedico centroMedico;
 
-    public Paciente(int id, boolean esVIP, CentroMedicoVIP centroMedico, int medicoAsignado) {
+    public Paciente(int id, boolean esVip, CentroMedico centroMedico) {
         this.id = id;
-        this.esVIP = esVIP;
+        this.esVip = esVip;
         this.centroMedico = centroMedico;
-        this.medicoAsignado = medicoAsignado;
-    }
-
-    public boolean esVIP() {
-        return esVIP;
-    }
-
-    public int getMedicoAsignado() {
-        return medicoAsignado;
     }
 
     @Override
     public void run() {
         try {
-            centroMedico.ingresarCentro(this);
+            centroMedico.entrarCentroMedico(id, esVip);
+            centroMedico.esperarMedico(id, esVip);
+            centroMedico.pagarConsulta(id);
+            centroMedico.salirCentroMedico(id);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
-    }
-
-    @Override
-    public String toString() {
-        return esVIP ? "Paciente VIP " + id : "Paciente " + id + " asignado al médico " + medicoAsignado;
     }
 }
